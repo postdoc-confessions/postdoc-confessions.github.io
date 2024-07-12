@@ -13,7 +13,7 @@
 <body>
     <h1>Post-doc-alyptic Revelations</h1>
     <p>Share your postdoc experiences anonymously. No personal information is collected or stored.</p>
-    <form id="confession-form">
+    <form id="confession-form" onsubmit="return false;">
         <label for="story">Your Story:</label><br>
         <textarea id="story" name="story" rows="4" required></textarea><br>
         <button type="submit" id="submit-btn">Submit</button>
@@ -24,9 +24,14 @@
 <script>
     document.getElementById('confession-form').addEventListener('submit', function(e) {
         e.preventDefault(); // This line is crucial
+        submitForm();
+    });
+
+    function submitForm() {
         var story = document.getElementById('story').value;
         
-        console.log('Attempting to submit:', story); // Client-side log
+        console.log('Attempting to submit:', story);
+        document.getElementById('result').textContent = 'Attempting to submit...';
         
         fetch('https://exciting-grove-touch.glitch.me/submit', {
             method: 'POST',
@@ -36,18 +41,25 @@
             body: JSON.stringify({ story: story }),
         })
         .then(response => {
-            console.log('Response status:', response.status); // Log the response status
+            console.log('Response status:', response.status);
+            document.getElementById('result').textContent += ' Received response.';
             return response.text();
         })
         .then(data => {
-            console.log('Server response:', data); // Log the server's response
-            document.getElementById('result').textContent = 'Submission received! We'll review and post it soon.';
+            console.log('Server response:', data);
+            document.getElementById('result').textContent = 'Submission received! Server says: ' + data;
             document.getElementById('story').value = '';
         })
         .catch((error) => {
             console.error('Error:', error);
-            document.getElementById('result').textContent = 'Error submitting. Please try again.';
+            document.getElementById('result').textContent = 'Error submitting. Please check console and try again.';
         });
+    }
+
+    // Also handle button click directly
+    document.getElementById('submit-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        submitForm();
     });
 </script>
 </body>
