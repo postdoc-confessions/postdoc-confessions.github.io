@@ -24,10 +24,23 @@
         document.getElementById('confession-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var story = document.getElementById('story').value;
-            document.getElementById('result').textContent = 'Submission received! We'll review and post it soon.';
-            document.getElementById('story').value = '';
-            // Here you would typically send the data to a server
-            console.log('Submitted story:', story);
+            
+            fetch('https://exciting-grove-touch.glitch.me/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ story: story }),
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('result').textContent = 'Submission received! We'll review and post it soon.';
+                document.getElementById('story').value = '';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('result').textContent = 'Error submitting. Please try again.';
+            });
         });
     </script>
 </body>
