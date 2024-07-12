@@ -20,29 +20,35 @@
         <form id="confession-form" onsubmit="return false;">
     </form>
     <p id="result"></p>
-
-    <script>
-        document.getElementById('confession-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            var story = document.getElementById('story').value;
-            
-            fetch('https://exciting-grove-touch.glitch.me/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ story: story }),
-            })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('result').textContent = 'Submission received! We'll review and post it soon.';
-                document.getElementById('story').value = '';
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                document.getElementById('result').textContent = 'Error submitting. Please try again.';
-            });
+        
+<script>
+    document.getElementById('confession-form').addEventListener('submit', function(e) {
+        e.preventDefault(); // This line is crucial
+        var story = document.getElementById('story').value;
+        
+        console.log('Attempting to submit:', story); // Client-side log
+        
+        fetch('https://exciting-grove-touch.glitch.me/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ story: story }),
+        })
+        .then(response => {
+            console.log('Response status:', response.status); // Log the response status
+            return response.text();
+        })
+        .then(data => {
+            console.log('Server response:', data); // Log the server's response
+            document.getElementById('result').textContent = 'Submission received! We'll review and post it soon.';
+            document.getElementById('story').value = '';
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            document.getElementById('result').textContent = 'Error submitting. Please try again.';
         });
-    </script>
+    });
+</script>
 </body>
 </html>
