@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-doc-alyptic Revelations</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        textarea { width: 100%; padding: 10px; }
+        #submit-btn { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Post-doc-alyptic Revelations</h1>
+    <p>Share your postdoc experiences anonymously. No personal information is collected or stored.</p>
+    <form id="confession-form">
+        <label for="story">Your Story:</label><br>
+        <textarea id="story" name="story" rows="4" required></textarea><br>
+        <button type="submit" id="submit-btn">Submit</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        document.getElementById('confession-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var story = document.getElementById('story').value;
+            document.getElementById('result').textContent = 'Submission received! We'll review and post it soon.';
+            document.getElementById('story').value = '';
+            // Here you would typically send the data to a server
+            console.log('Submitted story:', story);
+        });
+    </script>
+</body>
+</html>
