@@ -21,41 +21,36 @@
     </form>
     <p id="result"></p>
         
-<script>
-    document.getElementById('confession-form').addEventListener('submit', function(e) {
-        e.preventDefault(); // This line is crucial
-        submitForm();
-    });
-
-    function submitForm() {
-        var story = document.getElementById('story').value;
-        
-        console.log('Attempting to submit:', story);
-        document.getElementById('result').textContent = 'Attempting to submit...';
-        
-        fetch('https://exciting-grove-touch.glitch.me/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ story: story }),
-        })
-        .then(response => {
-            console.log('Response status:', response.status);
-            document.getElementById('result').textContent += ' Received response.';
-            return response.text();
-        })
-        .then(data => {
-            console.log('Server response:', data);
-            document.getElementById('result').textContent = 'Submission received! Server says: ' + data;
-            document.getElementById('story').value = '';
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            document.getElementById('result').textContent = 'Error submitting. Please check console and try again.';
-        });
+app.post('/submit', (req, res) => {
+  console.log('Received submission request');
+  console.log('Request body:', req.body);
+  
+  const submission = req.body.story;
+  
+  if (!submission) {
+    console.error('No story in submission');
+    return res.status(400).send('No story provided');
+  }
+  
+  const filePath = 'submissions.txt';
+  fs.appendFile(filePath, submission + '\n', (err) => {
+    if (err) {
+      console.error('Error saving submission:', err);
+      res.status(500).send('Error saving submission');
+    } else {
+      console.log(`Submission saved to ${filePath}`);
+      // Check if file exists after saving
+      fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+          console.error(`${filePath} does not exist after saving`);
+        } else {
+          console.log(`${filePath} exists after saving`);
+        }
+      });
+      res.send('Submission received and saved');
     }
-
+  });
+});
     // Also handle button click directly
     document.getElementById('submit-btn').addEventListener('click', function(e) {
         e.preventDefault();
